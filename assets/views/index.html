@@ -1,0 +1,83 @@
+<html>
+	<head>
+		<title>Flag Face</title>
+		<style>
+			body {
+				margin: 0;
+			}
+
+			#profile, img {
+				width: 300px;
+				height: 300px;
+			}
+
+			#profile {
+				position: relative;
+				background-image: url('');
+				background-size: contain;
+			}
+
+			#filter {
+				opacity: 0.6;
+			}
+
+			canvas {
+				position: absolute;
+				top: 400;
+				left: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="profile">
+			<img id="filter" src="/images/leb-fra-filter.png">
+		</div>
+		<input type="file" onchange="ff.addProfileImage(this)">
+		<a id="download">Download Image</a>
+		<script type="text/javascript" src="/js/html2canvas.min.js"></script>
+		<script>
+			var ff = new FaceFlag();
+
+			function FaceFlag(){
+				this.profileImgSrc = '';
+				this.profileEl = '';
+				this.linkEl = '';
+			}
+
+			FaceFlag.prototype.generateImage = function(){
+				html2canvas(ff.profileEl, {
+					onrendered: function(canvas){
+						ff.linkEl.href = canvas.toDataURL();
+						ff.linkEl.download = 'profile.png';
+					},
+					width: 300,
+					height: 300
+				});
+			}
+
+			FaceFlag.prototype.addProfileImage = function(input){
+				if (input && input.files && input.files[0]) {
+					var reader = new FileReader();
+					reader.onload = onload;
+					reader.readAsDataURL(input.files[0]);
+
+					function onload(e){
+						ff.profileImgSrc = e.target.result;
+						ff.profileEl.style.backgroundImage = 'url(' + e.target.result + ')';
+						ff.generateImage();
+					}
+				}
+			}
+
+			FaceFlag.prototype.addFilter = function(){
+
+			}
+
+			window.onload = function(){
+				ff.profileEl = document.getElementById('profile');
+				ff.linkEl = document.getElementById('download');
+			}
+		</script>
+		
+	</body>
+</html>
