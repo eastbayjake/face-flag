@@ -2,10 +2,57 @@
 	<head>
 		<title>Face Flag</title>
 		<style>
-			body {
+			html {
+				background-color: #515151;
+				color: #FFFFFF;
+			}
+
+			#container {
 				margin: 0 auto;
-				width: 500px;
+				width: 300px;
 				text-align: center;
+				font-family: sans-serif;
+			}
+
+			.title {
+				font-size: 64px;
+    			font-weight: bold;
+			}
+
+			.tagline {
+				margin: 10px 0;
+    			font-style: italic;
+			}
+
+			#inner-container {
+				position: relative;
+			}
+
+			#upload label,
+			#download {
+				position: relative;
+			    display: inline-block;
+			    width: 300px;
+			    height: 50px;
+			    line-height: 50px;
+			    margin: 10px auto 0 auto;
+			    background-color: #00B4FF;
+			    color: #FFFFFF;
+			    text-decoration: none;
+			}
+
+			#upload input {
+				cursor: inherit;
+			    display: block;
+			    font-size: 999px;
+			    filter: alpha(opacity=0);
+			    min-height: 100%;
+			    min-width: 100%;
+			    opacity: 0;
+			    position: absolute;
+			    right: 0;
+			    text-align: right;
+			    top: 0;
 			}
 
 			#profile, img {
@@ -15,6 +62,7 @@
 
 			#profile {
 				position: relative;
+				background-color: #FFFFFF;
 				background-image: url('');
 				background-size: contain;
 				margin: 0 auto;
@@ -30,20 +78,103 @@
 				left: 0;
 			}
 
-			a {
+			#filters {
+				position: absolute;
+				top: 0;
+				right: -110px;
+			}
+
+			#filters > div {
+				width: 100px;
+				height: 100px;
+				line-height: 100px;
+				margin-bottom: 10px;
+				background-size: contain;
+				cursor: pointer;
+			}
+
+			.headline {
 				display: block;
+				height: 25px;
+				line-height: 25px;
+				font-size: 20px;
+			}
+
+			.leb {
+				background-image: url('/images/leb-filter.png');
+			}
+
+			.fra {
+				background-image: url('/images/fra-filter.png');
+			}
+
+			.leb-fra {
+				background-image: url('/images/leb-fra-filter.png');
+			}
+
+			#download {
 				visibility: hidden;
+			}
+
+			#footer {
+				position: absolute;
+			    bottom: 10;
+			    left: 0;
+			    width: 100%;
+			}
+
+			#footer a {
+				color: #FFFFFF;
+			}
+
+			@media screen and (max-height: 680px) {
+				#footer {
+					visibility: hidden;
+				}
+			}
+
+			@media screen and (max-width: 540px) {
+				#filters {
+					position: initial;
+				}
+
+				#filters > div {
+					display: inline-block;
+				    width: 75px;
+				    height: 75px;
+				    margin-top: 10px;
+				    line-height: 100px;
+				    margin-bottom: 10px;
+				    background-size: contain;
+				}
 			}
 		</style>
 	</head>
 	<body>
-		<h2>Face Flag</h2>
-		<h4>Add a national flag to your profile photo</h4>
-		<div id="profile">
-			<img id="filter" src="/images/leb-fra-filter.png">
+		<div id="container">
+			<div id="header">
+				<div class="title">Face Flag</div>
+				<div class="tagline">Add a national flag to your profile photo</div>
+			</div>
+			<div id="inner-container">
+				<div id="profile">
+					<img id="filter" src="">
+				</div>
+				<div id="filters">
+					<div class="leb" onclick="ff.addFilter('/images/leb-filter.png')"></div>
+					<div class="fra" onclick="ff.addFilter('/images/fra-filter.png')"></div>
+					<div class="leb-fra" onclick="ff.addFilter('/images/leb-fra-filter.png')"></div>
+				</div>
+				<div id="upload">
+					<label for="file">
+						Upload Profile Photo
+						<input name="file" type="file" onchange="ff.addProfileImage(this)">
+					</label>
+				</div>
+				<a id="download">Download Image</a>
+			</div>
+			<div id="footer">Created by <a href="https://twitter.com/eastbayjake" target="_blank">Jake McGuire</a></div>
 		</div>
-		<input type="file" onchange="ff.addProfileImage(this)">
-		<a id="download">Download Image</a>
 		<script type="text/javascript" src="/js/html2canvas.min.js"></script>
 		<script>
 			var ff = new FaceFlag();
@@ -51,6 +182,7 @@
 			function FaceFlag(){
 				this.profileImgSrc = '';
 				this.profileEl = '';
+				this.filterEl = '';
 				this.linkEl = '';
 			}
 
@@ -80,13 +212,14 @@
 				}
 			}
 
-			FaceFlag.prototype.addFilter = function(){
-
+			FaceFlag.prototype.addFilter = function(src){
+				ff.filterEl.src = src;
 			}
 
 			window.onload = function(){
 				ff.profileEl = document.getElementById('profile');
 				ff.linkEl = document.getElementById('download');
+				ff.filterEl = document.getElementById('filter');
 			}
 		</script>
 		<script>
